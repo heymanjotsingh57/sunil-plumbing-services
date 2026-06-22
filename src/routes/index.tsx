@@ -324,7 +324,7 @@ function BookingPage() {
                     )}
                   </div>
 
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                     {TIME_SLOTS.map((s) => {
                       const taken = bookedSlots.includes(s);
                       const active = slot === s;
@@ -335,16 +335,21 @@ function BookingPage() {
                           disabled={taken || submitting || loadingSlots}
                           onClick={() => setSlot(s)}
                           className={cn(
-                            "px-3 py-2 rounded-lg text-sm font-medium border transition-all",
+                            "px-3 py-2 rounded-lg text-sm font-medium border transition-all flex flex-col items-center leading-tight",
                             taken &&
-                              "bg-muted text-muted-foreground line-through cursor-not-allowed opacity-60",
+                              "bg-muted text-muted-foreground cursor-not-allowed opacity-70",
                             !taken && !active && "bg-background hover:border-primary hover:text-primary",
                             active && "bg-primary text-primary-foreground border-primary shadow-soft",
                           )}
                           aria-pressed={active}
-                          aria-label={taken ? `${s} (booked)` : s}
+                          aria-label={taken ? `${s} already booked` : s}
                         >
-                          {s}
+                          <span className={cn(taken && "line-through")}>{s}</span>
+                          {taken && (
+                            <span className="text-[10px] uppercase tracking-wide text-destructive font-semibold mt-0.5">
+                              Already Booked
+                            </span>
+                          )}
                         </button>
                       );
                     })}
