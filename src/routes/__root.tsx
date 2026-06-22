@@ -77,14 +77,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "Sunil Plumbing Services" },
+      { name: "description", content: "Professional plumbing services with easy online booking. Schedule repairs, maintenance, drain cleaning, leak fixing, and emergency plumbing visits quickly and s" },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "Sunil Plumbing Services" },
+      { property: "og:description", content: "Professional plumbing services with easy online booking. Schedule repairs, maintenance, drain cleaning, leak fixing, and emergency plumbing visits quickly and s" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Sunil Plumbing Services" },
+      { name: "twitter:description", content: "Professional plumbing services with easy online booking. Schedule repairs, maintenance, drain cleaning, leak fixing, and emergency plumbing visits quickly and s" },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b7a75d72-ba18-4a7a-8b34-bea260f9d407/id-preview-65557ff1--7107f2ab-ccfb-4cb1-b54e-681da88b96cb.lovable.app-1782107291576.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b7a75d72-ba18-4a7a-8b34-bea260f9d407/id-preview-65557ff1--7107f2ab-ccfb-4cb1-b54e-681da88b96cb.lovable.app-1782107291576.png" },
     ],
     links: [
       {
