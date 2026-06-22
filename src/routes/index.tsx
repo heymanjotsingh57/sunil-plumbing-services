@@ -149,7 +149,7 @@ function BookingPage() {
     if (insertErr) {
       // Unique violation -> double booking race
       if (insertErr.code === "23505") {
-        setError("Sorry, that slot was just booked. Please pick another.");
+        setError("This time slot is already booked.");
         setBookedSlots((prev) => Array.from(new Set([...prev, slot!])));
         setSlot(null);
       } else {
