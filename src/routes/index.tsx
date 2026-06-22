@@ -130,7 +130,7 @@ function BookingPage() {
       return;
     }
     if (existing) {
-      setError("Sorry, that slot was just booked. Please pick another.");
+      setError("This time slot is already booked.");
       setBookedSlots((prev) => Array.from(new Set([...prev, slot!])));
       setSlot(null);
       setSubmitting(false);
