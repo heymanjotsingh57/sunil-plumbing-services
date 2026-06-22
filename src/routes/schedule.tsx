@@ -68,7 +68,7 @@ function SchedulePage() {
             <div className="w-12 h-12 rounded-full bg-primary/10 grid place-items-center mb-3">
               <Lock className="w-6 h-6 text-primary" />
             </div>
-            <h1 className="text-xl font-bold">Staff Access</h1>
+            <h1 className="text-xl font-bold">Schedule Access</h1>
             <p className="text-sm text-muted-foreground mt-1">
               Enter the access code to view the booking schedule.
             </p>
