@@ -157,6 +157,7 @@ function BookingPage() {
       return;
     }
 
+    setConfirmed({ jobType, date, slot: slot! });
     setSuccess(true);
     setSubmitting(false);
   }
@@ -165,8 +166,10 @@ function BookingPage() {
     setFullName("");
     setPhone("");
     setAddress("");
+    setJobType("");
     setSlot(null);
     setSuccess(false);
+    setConfirmed(null);
     setError(null);
   }
 
