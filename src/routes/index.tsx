@@ -261,14 +261,14 @@ function BookingPage() {
                       disabled={submitting}
                     />
                   </Field>
-                  <Field label="Phone Number (10 digits)" icon={<Phone className="w-4 h-4" />}>
+                  <Field label="Phone Number (10–15 digits)" icon={<Phone className="w-4 h-4" />}>
                     <Input
                       value={phone}
-                      onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
+                      onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 15))}
                       placeholder="e.g. 9876543210"
                       inputMode="numeric"
-                      pattern="[0-9]{10}"
-                      maxLength={10}
+                      pattern="[0-9]{10,15}"
+                      maxLength={15}
                       disabled={submitting}
                     />
                   </Field>
