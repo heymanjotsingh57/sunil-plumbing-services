@@ -50,6 +50,7 @@ function BookingPage() {
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
+  const [jobType, setJobType] = useState<string>("");
   const [date, setDate] = useState<string>(todayISO());
   const [slot, setSlot] = useState<string | null>(null);
   const [bookedSlots, setBookedSlots] = useState<string[]>([]);
