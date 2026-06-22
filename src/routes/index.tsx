@@ -260,17 +260,36 @@ function BookingPage() {
                       disabled={submitting}
                     />
                   </Field>
-                  <Field label="Phone Number" icon={<Phone className="w-4 h-4" />}>
+                  <Field label="Phone Number (10 digits)" icon={<Phone className="w-4 h-4" />}>
                     <Input
                       value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      placeholder="e.g. +91 98765 43210"
-                      inputMode="tel"
-                      maxLength={20}
+                      onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
+                      placeholder="e.g. 9876543210"
+                      inputMode="numeric"
+                      pattern="[0-9]{10}"
+                      maxLength={10}
                       disabled={submitting}
                     />
                   </Field>
                 </div>
+
+                <Field label="Plumbing Issue / Job Type" icon={<Wrench className="w-4 h-4" />}>
+                  <select
+                    value={jobType}
+                    onChange={(e) => setJobType(e.target.value)}
+                    disabled={submitting}
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    <option value="">Select an issue…</option>
+                    {JOB_TYPES.map((j) => (
+                      <option key={j} value={j}>
+                        {j}
+                      </option>
+                    ))}
+                  </select>
+                </Field>
+                <div className="hidden">
+
 
                 <Field label="Address" icon={<MapPin className="w-4 h-4" />}>
                   <Textarea
