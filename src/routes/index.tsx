@@ -184,7 +184,7 @@ function BookingPage() {
             to="/schedule"
             className="text-sm text-white/85 hover:text-white underline-offset-4 hover:underline"
           >
-            Staff login
+            View schedule
           </Link>
         </div>
 
