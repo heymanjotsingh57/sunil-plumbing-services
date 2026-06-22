@@ -239,7 +239,7 @@ function BookingPage() {
       <main className="mx-auto max-w-3xl px-4 -mt-12 md:-mt-16 pb-16">
         <div className="bg-card rounded-2xl shadow-soft border p-6 md:p-8">
           {success ? (
-            <SuccessCard onAnother={resetForm} />
+            <SuccessCard onAnother={resetForm} details={confirmed} />
           ) : (
             <>
               <div className="mb-6">
