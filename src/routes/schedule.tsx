@@ -141,7 +141,7 @@ function ScheduleView({ onSignOut }: { onSignOut: () => void }) {
   }, [date]);
 
   const sorted = useMemo(() => {
-    const order = new Map(TIME_SLOTS.map((s, i) => [s, i]));
+    const order = new Map<string, number>(TIME_SLOTS.map((s, i) => [s, i]));
     return [...bookings].sort(
       (a, b) => (order.get(a.time_slot) ?? 99) - (order.get(b.time_slot) ?? 99),
     );
