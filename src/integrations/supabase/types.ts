@@ -21,6 +21,7 @@ export type Database = {
           created_at: string
           customer_name: string
           id: string
+          job_type: string
           phone: string
           time_slot: string
         }
@@ -30,6 +31,7 @@ export type Database = {
           created_at?: string
           customer_name: string
           id?: string
+          job_type?: string
           phone: string
           time_slot: string
         }
@@ -39,6 +41,7 @@ export type Database = {
           created_at?: string
           customer_name?: string
           id?: string
+          job_type?: string
           phone?: string
           time_slot?: string
         }

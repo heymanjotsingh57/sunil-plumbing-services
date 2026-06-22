@@ -25,6 +25,7 @@ type Booking = {
   customer_name: string;
   phone: string;
   address: string;
+  job_type: string;
   booking_date: string;
   time_slot: string;
   created_at: string;
@@ -209,19 +210,19 @@ function ScheduleView({ onSignOut }: { onSignOut: () => void }) {
               <table className="w-full text-sm">
                 <thead className="bg-muted/60 text-left">
                   <tr>
-                    <Th>Date</Th>
                     <Th>Time</Th>
                     <Th>Customer Name</Th>
                     <Th>Phone Number</Th>
+                    <Th>Job Type</Th>
                     <Th>Address</Th>
+                    <Th>Date</Th>
                   </tr>
                 </thead>
                 <tbody>
                   {sorted.map((b) => (
                     <tr key={b.id} className="border-t hover:bg-muted/40 transition-colors">
-                      <Td>{format(new Date(b.booking_date), "PP")}</Td>
                       <Td>
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-accent/15 text-accent-foreground font-medium">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-accent/15 text-accent-foreground font-semibold whitespace-nowrap">
                           {b.time_slot}
                         </span>
                       </Td>
@@ -229,12 +230,18 @@ function ScheduleView({ onSignOut }: { onSignOut: () => void }) {
                       <Td>
                         <a
                           href={`tel:${b.phone}`}
-                          className="text-primary hover:underline"
+                          className="text-primary hover:underline whitespace-nowrap"
                         >
                           {b.phone}
                         </a>
                       </Td>
-                      <Td className="max-w-[24rem]">{b.address}</Td>
+                      <Td>
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-primary/10 text-primary text-xs font-medium whitespace-nowrap">
+                          {b.job_type ?? "—"}
+                        </span>
+                      </Td>
+                      <Td className="max-w-[24rem] whitespace-pre-wrap">{b.address}</Td>
+                      <Td className="whitespace-nowrap">{format(new Date(b.booking_date), "PP")}</Td>
                     </tr>
                   ))}
                 </tbody>

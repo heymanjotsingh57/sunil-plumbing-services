@@ -16,7 +16,7 @@ import {
 import { Link } from "@tanstack/react-router";
 
 import { supabase } from "@/integrations/supabase/client";
-import { TIME_SLOTS } from "@/lib/booking-constants";
+import { TIME_SLOTS, JOB_TYPES } from "@/lib/booking-constants";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -50,6 +50,7 @@ function BookingPage() {
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
+  const [jobType, setJobType] = useState<string>("");
   const [date, setDate] = useState<string>(todayISO());
   const [slot, setSlot] = useState<string | null>(null);
   const [bookedSlots, setBookedSlots] = useState<string[]>([]);
@@ -57,6 +58,7 @@ function BookingPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [confirmed, setConfirmed] = useState<{ jobType: string; date: string; slot: string } | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -94,8 +96,10 @@ function BookingPage() {
 
   function validate(): string | null {
     if (!fullName.trim()) return "Please enter your full name.";
-    if (!/^[+\d\s()-]{7,}$/.test(phone.trim())) return "Please enter a valid phone number.";
+    if (!/^\d{10}$/.test(phone.trim()))
+      return "Phone number must be exactly 10 digits (numbers only).";
     if (!address.trim()) return "Please enter your address.";
+    if (!jobType) return "Please select a plumbing issue / job type.";
     if (!date) return "Please pick a booking date.";
     if (!slot) return "Please select an available time slot.";
     return null;
@@ -136,6 +140,7 @@ function BookingPage() {
       customer_name: fullName.trim(),
       phone: phone.trim(),
       address: address.trim(),
+      job_type: jobType,
       booking_date: date,
       time_slot: slot!,
     });
@@ -153,6 +158,7 @@ function BookingPage() {
       return;
     }
 
+    setConfirmed({ jobType, date, slot: slot! });
     setSuccess(true);
     setSubmitting(false);
   }
@@ -161,8 +167,10 @@ function BookingPage() {
     setFullName("");
     setPhone("");
     setAddress("");
+    setJobType("");
     setSlot(null);
     setSuccess(false);
+    setConfirmed(null);
     setError(null);
   }
 
@@ -231,7 +239,7 @@ function BookingPage() {
       <main className="mx-auto max-w-3xl px-4 -mt-12 md:-mt-16 pb-16">
         <div className="bg-card rounded-2xl shadow-soft border p-6 md:p-8">
           {success ? (
-            <SuccessCard onAnother={resetForm} />
+            <SuccessCard onAnother={resetForm} details={confirmed} />
           ) : (
             <>
               <div className="mb-6">
@@ -252,17 +260,36 @@ function BookingPage() {
                       disabled={submitting}
                     />
                   </Field>
-                  <Field label="Phone Number" icon={<Phone className="w-4 h-4" />}>
+                  <Field label="Phone Number (10 digits)" icon={<Phone className="w-4 h-4" />}>
                     <Input
                       value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      placeholder="e.g. +91 98765 43210"
-                      inputMode="tel"
-                      maxLength={20}
+                      onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
+                      placeholder="e.g. 9876543210"
+                      inputMode="numeric"
+                      pattern="[0-9]{10}"
+                      maxLength={10}
                       disabled={submitting}
                     />
                   </Field>
                 </div>
+
+                <Field label="Plumbing Issue / Job Type" icon={<Wrench className="w-4 h-4" />}>
+                  <select
+                    value={jobType}
+                    onChange={(e) => setJobType(e.target.value)}
+                    disabled={submitting}
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    <option value="">Select an issue…</option>
+                    {JOB_TYPES.map((j) => (
+                      <option key={j} value={j}>
+                        {j}
+                      </option>
+                    ))}
+                  </select>
+                </Field>
+                
+
 
                 <Field label="Address" icon={<MapPin className="w-4 h-4" />}>
                   <Textarea
@@ -297,7 +324,7 @@ function BookingPage() {
                     )}
                   </div>
 
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                     {TIME_SLOTS.map((s) => {
                       const taken = bookedSlots.includes(s);
                       const active = slot === s;
@@ -308,16 +335,21 @@ function BookingPage() {
                           disabled={taken || submitting || loadingSlots}
                           onClick={() => setSlot(s)}
                           className={cn(
-                            "px-3 py-2 rounded-lg text-sm font-medium border transition-all",
+                            "px-3 py-2 rounded-lg text-sm font-medium border transition-all flex flex-col items-center leading-tight",
                             taken &&
-                              "bg-muted text-muted-foreground line-through cursor-not-allowed opacity-60",
+                              "bg-muted text-muted-foreground cursor-not-allowed opacity-70",
                             !taken && !active && "bg-background hover:border-primary hover:text-primary",
                             active && "bg-primary text-primary-foreground border-primary shadow-soft",
                           )}
                           aria-pressed={active}
-                          aria-label={taken ? `${s} (booked)` : s}
+                          aria-label={taken ? `${s} already booked` : s}
                         >
-                          {s}
+                          <span className={cn(taken && "line-through")}>{s}</span>
+                          {taken && (
+                            <span className="text-[10px] uppercase tracking-wide text-destructive font-semibold mt-0.5">
+                              Already Booked
+                            </span>
+                          )}
                         </button>
                       );
                     })}
@@ -383,17 +415,32 @@ function Field({
   );
 }
 
-function SuccessCard({ onAnother }: { onAnother: () => void }) {
+function SuccessCard({
+  onAnother,
+  details,
+}: {
+  onAnother: () => void;
+  details: { jobType: string; date: string; slot: string } | null;
+}) {
   return (
     <div className="text-center py-8">
       <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 grid place-items-center mb-4">
         <CheckCircle2 className="w-9 h-9 text-primary" />
       </div>
-      <h2 className="text-2xl font-bold">Booking confirmed</h2>
+      <h2 className="text-2xl font-bold">Booking Confirmed!</h2>
       <p className="text-muted-foreground mt-2 max-w-md mx-auto">
-        Your booking request has been received successfully. Our team will reach out shortly to
-        confirm the visit.
+        Your booking request has been received successfully.
       </p>
+      {details && (
+        <dl className="mt-5 mx-auto max-w-sm text-left border rounded-lg p-4 bg-muted/30 text-sm grid grid-cols-[auto_1fr] gap-x-4 gap-y-2">
+          <dt className="font-medium text-muted-foreground">Job Type</dt>
+          <dd>{details.jobType}</dd>
+          <dt className="font-medium text-muted-foreground">Date</dt>
+          <dd>{format(new Date(details.date), "PP")}</dd>
+          <dt className="font-medium text-muted-foreground">Time</dt>
+          <dd>{details.slot}</dd>
+        </dl>
+      )}
       <Button onClick={onAnother} className="mt-6" variant="outline">
         Make another booking
       </Button>

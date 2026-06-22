@@ -13,5 +13,16 @@ export const TIME_SLOTS = [
 
 export type TimeSlot = (typeof TIME_SLOTS)[number];
 
+export const JOB_TYPES = [
+  "Leak Repair",
+  "Drain Blockage",
+  "New Fitting Installation",
+  "Pipe Replacement",
+  "Water Tank Issue",
+  "Other",
+] as const;
+
+export type JobType = (typeof JOB_TYPES)[number];
+
 export const ACCESS_CODE = "SUNIL2026";
 export const ACCESS_STORAGE_KEY = "sunil_schedule_access";
