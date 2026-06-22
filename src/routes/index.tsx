@@ -58,6 +58,7 @@ function BookingPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [confirmed, setConfirmed] = useState<{ jobType: string; date: string; slot: string } | null>(null);
 
   useEffect(() => {
     let cancelled = false;
