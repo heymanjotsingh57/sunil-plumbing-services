@@ -25,6 +25,7 @@ type Booking = {
   customer_name: string;
   phone: string;
   address: string;
+  job_type: string;
   booking_date: string;
   time_slot: string;
   created_at: string;
