@@ -139,6 +139,7 @@ function BookingPage() {
       customer_name: fullName.trim(),
       phone: phone.trim(),
       address: address.trim(),
+      job_type: jobType,
       booking_date: date,
       time_slot: slot!,
     });
