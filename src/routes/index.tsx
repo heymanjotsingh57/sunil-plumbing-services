@@ -96,12 +96,13 @@ function BookingPage() {
 
   function validate(): string | null {
     if (!fullName.trim()) return "Please enter your full name.";
-    if (!/^\d{10}$/.test(phone.trim()))
-      return "Phone number must be exactly 10 digits (numbers only).";
+    if (!/^\d{10,15}$/.test(phone.trim()))
+      return "Please enter a valid phone number.";
     if (!address.trim()) return "Please enter your address.";
     if (!jobType) return "Please select a plumbing issue / job type.";
     if (!date) return "Please pick a booking date.";
     if (!slot) return "Please select an available time slot.";
+    if (bookedSlots.includes(slot)) return "This time slot is already booked.";
     return null;
   }
 
