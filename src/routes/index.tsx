@@ -96,13 +96,12 @@ function BookingPage() {
 
   function validate(): string | null {
     if (!fullName.trim()) return "Please enter your full name.";
-    if (!/^\d{10,15}$/.test(phone.trim()))
-      return "Please enter a valid phone number.";
+    if (!/^\d{10}$/.test(phone.trim()))
+      return "Phone number must be exactly 10 digits (numbers only).";
     if (!address.trim()) return "Please enter your address.";
     if (!jobType) return "Please select a plumbing issue / job type.";
     if (!date) return "Please pick a booking date.";
     if (!slot) return "Please select an available time slot.";
-    if (bookedSlots.includes(slot)) return "This time slot is already booked.";
     return null;
   }
 
@@ -130,7 +129,7 @@ function BookingPage() {
       return;
     }
     if (existing) {
-      setError("This time slot is already booked.");
+      setError("Sorry, that slot was just booked. Please pick another.");
       setBookedSlots((prev) => Array.from(new Set([...prev, slot!])));
       setSlot(null);
       setSubmitting(false);
@@ -149,7 +148,7 @@ function BookingPage() {
     if (insertErr) {
       // Unique violation -> double booking race
       if (insertErr.code === "23505") {
-        setError("This time slot is already booked.");
+        setError("Sorry, that slot was just booked. Please pick another.");
         setBookedSlots((prev) => Array.from(new Set([...prev, slot!])));
         setSlot(null);
       } else {
@@ -261,14 +260,14 @@ function BookingPage() {
                       disabled={submitting}
                     />
                   </Field>
-                  <Field label="Phone Number (10–15 digits)" icon={<Phone className="w-4 h-4" />}>
+                  <Field label="Phone Number (10 digits)" icon={<Phone className="w-4 h-4" />}>
                     <Input
                       value={phone}
-                      onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 15))}
+                      onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
                       placeholder="e.g. 9876543210"
                       inputMode="numeric"
-                      pattern="[0-9]{10,15}"
-                      maxLength={15}
+                      pattern="[0-9]{10}"
+                      maxLength={10}
                       disabled={submitting}
                     />
                   </Field>
