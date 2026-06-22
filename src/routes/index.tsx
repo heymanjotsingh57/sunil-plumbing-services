@@ -415,17 +415,32 @@ function Field({
   );
 }
 
-function SuccessCard({ onAnother }: { onAnother: () => void }) {
+function SuccessCard({
+  onAnother,
+  details,
+}: {
+  onAnother: () => void;
+  details: { jobType: string; date: string; slot: string } | null;
+}) {
   return (
     <div className="text-center py-8">
       <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 grid place-items-center mb-4">
         <CheckCircle2 className="w-9 h-9 text-primary" />
       </div>
-      <h2 className="text-2xl font-bold">Booking confirmed</h2>
+      <h2 className="text-2xl font-bold">Booking Confirmed!</h2>
       <p className="text-muted-foreground mt-2 max-w-md mx-auto">
-        Your booking request has been received successfully. Our team will reach out shortly to
-        confirm the visit.
+        Your booking request has been received successfully.
       </p>
+      {details && (
+        <dl className="mt-5 mx-auto max-w-sm text-left border rounded-lg p-4 bg-muted/30 text-sm grid grid-cols-[auto_1fr] gap-x-4 gap-y-2">
+          <dt className="font-medium text-muted-foreground">Job Type</dt>
+          <dd>{details.jobType}</dd>
+          <dt className="font-medium text-muted-foreground">Date</dt>
+          <dd>{format(new Date(details.date), "PP")}</dd>
+          <dt className="font-medium text-muted-foreground">Time</dt>
+          <dd>{details.slot}</dd>
+        </dl>
+      )}
       <Button onClick={onAnother} className="mt-6" variant="outline">
         Make another booking
       </Button>
