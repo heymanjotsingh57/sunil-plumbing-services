@@ -16,7 +16,7 @@ import {
 import { Link } from "@tanstack/react-router";
 
 import { supabase } from "@/integrations/supabase/client";
-import { TIME_SLOTS } from "@/lib/booking-constants";
+import { TIME_SLOTS, JOB_TYPES } from "@/lib/booking-constants";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
