@@ -288,7 +288,7 @@ function BookingPage() {
                     ))}
                   </select>
                 </Field>
-                <div className="hidden">
+                
 
 
                 <Field label="Address" icon={<MapPin className="w-4 h-4" />}>
