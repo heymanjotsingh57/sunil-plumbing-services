@@ -15,10 +15,10 @@ export type TimeSlot = (typeof TIME_SLOTS)[number];
 
 export const JOB_TYPES = [
   "Leak Repair",
-  "Drain Blockage",
-  "New Fitting Installation",
-  "Pipe Replacement",
-  "Water Tank Issue",
+  "Blocked Drain",
+  "New Fitting",
+  "Pipe Installation",
+  "Water Tank Service",
   "Other",
 ] as const;
 
