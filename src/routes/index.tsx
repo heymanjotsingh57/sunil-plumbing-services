@@ -65,16 +65,15 @@ function BookingPage() {
     async function load() {
       setLoadingSlots(true);
       setError(null);
-      const { data, error } = await supabase
-        .from("bookings")
-        .select("time_slot")
-        .eq("booking_date", date);
+      const { data, error } = await supabase.rpc("get_taken_slots" as any, {
+        _date: date,
+      });
       if (cancelled) return;
       if (error) {
         setError("Could not load availability. Please retry.");
         setBookedSlots([]);
       } else {
-        setBookedSlots((data ?? []).map((b) => b.time_slot));
+        setBookedSlots(((data ?? []) as Array<{ time_slot: string }>).map((b) => b.time_slot));
       }
       setLoadingSlots(false);
     }
@@ -115,20 +114,19 @@ function BookingPage() {
     }
     setSubmitting(true);
 
-    // Re-check availability right before insert
-    const { data: existing, error: checkErr } = await supabase
-      .from("bookings")
-      .select("id")
-      .eq("booking_date", date)
-      .eq("time_slot", slot!)
-      .maybeSingle();
+    // Re-check availability via safe RPC right before insert
+    const { data: takenData, error: checkErr } = await supabase.rpc(
+      "get_taken_slots" as any,
+      { _date: date },
+    );
 
     if (checkErr) {
       setError("Could not verify availability. Please try again.");
       setSubmitting(false);
       return;
     }
-    if (existing) {
+    const taken = ((takenData ?? []) as Array<{ time_slot: string }>).map((t) => t.time_slot);
+    if (taken.includes(slot!)) {
       setError("Sorry, that slot was just booked. Please pick another.");
       setBookedSlots((prev) => Array.from(new Set([...prev, slot!])));
       setSlot(null);
@@ -189,10 +187,10 @@ function BookingPage() {
             </div>
           </div>
           <Link
-            to="/schedule"
+            to="/auth"
             className="text-sm text-white/85 hover:text-white underline-offset-4 hover:underline"
           >
-            View schedule
+            Staff sign in
           </Link>
         </div>
 

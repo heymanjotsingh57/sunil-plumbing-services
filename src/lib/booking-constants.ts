@@ -24,5 +24,12 @@ export const JOB_TYPES = [
 
 export type JobType = (typeof JOB_TYPES)[number];
 
-export const ACCESS_CODE = "SUNIL2026";
-export const ACCESS_STORAGE_KEY = "sunil_schedule_access";
+export const BOOKING_STATUSES = [
+  "Pending",
+  "Confirmed",
+  "In Progress",
+  "Completed",
+  "Cancelled",
+] as const;
+
+export type BookingStatus = (typeof BOOKING_STATUSES)[number];
