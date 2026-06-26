@@ -1,11 +1,12 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Loader2, Lock, Wrench } from "lucide-react";
+import { Eye, EyeOff, Loader2, Lock, Wrench } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export const Route = createFileRoute("/auth")({
   ssr: false,
@@ -18,12 +19,33 @@ export const Route = createFileRoute("/auth")({
   component: AuthPage,
 });
 
+function mapAuthError(message: string): string {
+  const m = message.toLowerCase();
+  if (m.includes("invalid login")) {
+    return "Email or password is incorrect. If you just created the account, double-check the password you used.";
+  }
+  if (m.includes("email not confirmed")) {
+    return "This email hasn't been confirmed yet. Please check your inbox for the confirmation link.";
+  }
+  if (m.includes("user already registered") || m.includes("already been registered")) {
+    return "An account with this email already exists. Try signing in instead.";
+  }
+  if (m.includes("password should be") || m.includes("weak password") || m.includes("pwned")) {
+    return "That password is too weak or has appeared in a data breach. Please choose a stronger one.";
+  }
+  if (m.includes("rate limit")) {
+    return "Too many attempts. Please wait a moment and try again.";
+  }
+  return message;
+}
+
 function AuthPage() {
   const navigate = useNavigate();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
@@ -40,53 +62,64 @@ function AuthPage() {
     setInfo(null);
     setBusy(true);
 
-    if (mode === "signup") {
-      if (!fullName.trim()) {
-        setError("Please enter your full name.");
-        setBusy(false);
+    try {
+      if (mode === "signup") {
+        if (!fullName.trim()) {
+          setError("Please enter your full name.");
+          return;
+        }
+        const { error } = await supabase.auth.signUp({
+          email: email.trim(),
+          password,
+          options: {
+            data: { full_name: fullName.trim() },
+            emailRedirectTo: window.location.origin + "/auth",
+          },
+        });
+        if (error) {
+          setError(mapAuthError(error.message));
+          return;
+        }
+        const { data } = await supabase.auth.getSession();
+        if (data.session) {
+          navigate({ to: "/schedule", replace: true });
+        } else {
+          setInfo("Account created. You can sign in now.");
+          setMode("signin");
+          setPassword("");
+        }
         return;
       }
-      const { error } = await supabase.auth.signUp({
+
+      const { error } = await supabase.auth.signInWithPassword({
         email: email.trim(),
         password,
-        options: {
-          data: { full_name: fullName.trim() },
-          emailRedirectTo: window.location.origin + "/auth",
-        },
       });
       if (error) {
-        setError(error.message);
-        setBusy(false);
+        setError(mapAuthError(error.message));
         return;
       }
-      // If session is created immediately (auto-confirm), redirect; otherwise prompt
-      const { data } = await supabase.auth.getSession();
-      if (data.session) {
-        navigate({ to: "/schedule", replace: true });
+      navigate({ to: "/schedule", replace: true });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      // Network/config failures (e.g. no backend reachable) land here.
+      if (/fetch|network|failed/i.test(message)) {
+        setError(
+          "Can't reach the authentication service right now. Please check your connection and try again.",
+        );
       } else {
-        setInfo("Account created. Please sign in.");
-        setMode("signin");
-        setPassword("");
+        setError(message);
       }
+    } finally {
       setBusy(false);
-      return;
     }
-
-    const { error } = await supabase.auth.signInWithPassword({
-      email: email.trim(),
-      password,
-    });
-    if (error) {
-      setError("Invalid email or password.");
-      setBusy(false);
-      return;
-    }
-    navigate({ to: "/schedule", replace: true });
-    setBusy(false);
   }
 
   return (
-    <div className="min-h-screen grid place-items-center bg-background px-4">
+    <div className="min-h-screen grid place-items-center bg-background px-4 relative">
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
       <div className="w-full max-w-sm">
         <Link to="/" className="flex items-center justify-center gap-2 mb-6">
           <div className="grid place-items-center w-10 h-10 rounded-lg bg-primary text-primary-foreground">
@@ -143,15 +176,26 @@ function AuthPage() {
 
             <div className="grid gap-1.5">
               <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                autoComplete={mode === "signin" ? "current-password" : "new-password"}
-                minLength={8}
-                required
-              />
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  autoComplete={mode === "signin" ? "current-password" : "new-password"}
+                  minLength={8}
+                  required
+                  className="pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((s) => !s)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  className="absolute inset-y-0 right-2 grid place-items-center text-muted-foreground hover:text-foreground"
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
               {mode === "signup" && (
                 <p className="text-xs text-muted-foreground">At least 8 characters.</p>
               )}
