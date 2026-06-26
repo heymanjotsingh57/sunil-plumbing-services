@@ -22,6 +22,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -186,12 +187,15 @@ function BookingPage() {
               <p className="text-xs text-white/80">Services</p>
             </div>
           </div>
-          <Link
-            to="/auth"
-            className="text-sm text-white/85 hover:text-white underline-offset-4 hover:underline"
-          >
-            Staff sign in
-          </Link>
+          <div className="flex items-center gap-2">
+            <ThemeToggle className="bg-white/15 border-white/20 text-white hover:bg-white/25 hover:text-white" />
+            <Link
+              to="/auth"
+              className="text-sm text-white/85 hover:text-white underline-offset-4 hover:underline"
+            >
+              Staff sign in
+            </Link>
+          </div>
         </div>
 
         <div className="mx-auto max-w-6xl px-4 pt-6 pb-16 md:pt-12 md:pb-24 grid md:grid-cols-2 gap-10 items-center">

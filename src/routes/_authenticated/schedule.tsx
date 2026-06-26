@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/select";
 import { TIME_SLOTS, BOOKING_STATUSES, type BookingStatus } from "@/lib/booking-constants";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export const Route = createFileRoute("/_authenticated/schedule")({
   head: () => ({
@@ -148,6 +149,7 @@ function SchedulePage() {
                 </Button>
               </Link>
             )}
+            <ThemeToggle className="bg-white/15 border-white/20 text-white hover:bg-white/25 hover:text-white" />
             <Button size="sm" variant="secondary" onClick={signOut} className="gap-2">
               <LogOut className="w-4 h-4" /> Sign out
             </Button>
